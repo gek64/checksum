@@ -8,13 +8,15 @@ Version:
   1.00
 
 Usage:
-  checksum [Command] {files...}
+  checksum {Mode} [Command] files...
 
-Command:
+Mode:
   -md5              : use md5 (default)
   -crc32            : use crc32
   -sha1             : use sha1
   -sha256           : use sha256
+
+Command:
   -h                : show help
   -v                : show version
 
