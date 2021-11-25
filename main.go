@@ -4,7 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"gek_checksum"
+	"gek_path"
+	"log"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 var (
@@ -45,13 +49,11 @@ Command:
   -v                : show version
 
 Example:
-  1) checksum text.txt photo.jpg
-  1) checksum -md5 text.txt photo.jpg
-  1) checksum -crc32 text.txt photo.jpg
-  2) checksum -sha1 text.txt photo.jpg
-  3) checksum -sha256 text.txt photo.jpg
-  2) checksum -h
-  3) checksum -v`
+  1) checksum /root/books/*.txt
+  2) checksum t1.txt t2.txt
+  3) checksum -md5 t1.txt t2.txt
+  4) checksum -sha1 t1.txt t2.txt
+  5) checksum -sha256 t1.txt t2.txt`
 		fmt.Println(helpInfo)
 	}
 
@@ -76,24 +78,74 @@ Example:
 
 	// 打印版本信息
 	if cliVersion {
-		showVersion()
+		fmt.Println(`v1.00`)
 		os.Exit(0)
 	}
 }
 
-func showVersion() {
+func showChangelog() {
 	var versionInfo = `Changelog:
   1.00:
-    - First release`
+    - First release
+  1.01:
+    - Add wildcard(*,?) support in file name`
 
 	fmt.Println(versionInfo)
 }
 
 func main() {
-	for i := 0; i < flag.NArg(); i++ {
-		checksum, err := gek_checksum.Checksum(cliMode, flag.Args()[i])
+
+	files, err := WildcardMatchFile(flag.Args())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		checksum, err := gek_checksum.Checksum(cliMode, file)
 		if err == nil {
-			fmt.Println(flag.Args()[i], checksum)
+			fmt.Println(checksum, file)
 		}
 	}
+}
+
+// WildcardMatchFile 通配符匹配文件,pathList 示例: []string{ "./*", "test/1.txt" }
+func WildcardMatchFile(pathList []string) (matchList []string, err error) {
+	// 从多地址列表中获取单个地址
+	for _, filePath := range pathList {
+		// 地址文件名部分
+		var base = filepath.Base(filePath)
+		// 地址路径部分
+		var dir = filepath.Dir(filePath)
+
+		// 如果文件名部分带有通配符
+		if strings.Contains(base, "*") || strings.Contains(base, "?") {
+			// 匹配文件地址部分中的所有文件
+			var fileList []string
+			err := gek_path.WalkAll(dir, &fileList, false)
+			if err != nil {
+				return nil, err
+			}
+
+			// 所有文件中按文件名部分进行匹配
+			for _, file := range fileList {
+				// 正则匹配模式
+				matched, err := filepath.Match(base, filepath.Base(file))
+				if err != nil {
+					return nil, err
+				}
+				// 匹配成功的加入到匹配列表中
+				if matched {
+					matchList = append(matchList, file)
+				}
+			}
+		} else {
+			// 一般的无通配符路径则获取绝对路径存储到匹配列表中
+			fullPath, err := filepath.Abs(filePath)
+			if err != nil {
+				return nil, err
+			}
+			matchList = append(matchList, fullPath)
+		}
+	}
+	return matchList, nil
 }
