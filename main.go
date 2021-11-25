@@ -70,15 +70,15 @@ Example:
 		cliMode = "md5"
 	}
 
-	// 打印帮助信息
-	if cliHelp || flag.NArg() == 0 {
-		flag.Usage()
-		os.Exit(0)
-	}
-
 	// 打印版本信息
 	if cliVersion {
 		fmt.Println(`v1.00`)
+		os.Exit(0)
+	}
+
+	// 打印帮助信息
+	if cliHelp || flag.NArg() == 0 {
+		flag.Usage()
 		os.Exit(0)
 	}
 }
