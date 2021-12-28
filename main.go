@@ -19,13 +19,15 @@ var (
 	cliCrc32   bool
 	cliSha1    bool
 	cliSha256  bool
+	cliTest    bool
 )
 
 func init() {
-	flag.BoolVar(&cliMd5, "md5", false, "use md5 (default)")
+	flag.BoolVar(&cliMd5, "md5", false, "use md5")
 	flag.BoolVar(&cliCrc32, "crc32", false, "use crc32")
-	flag.BoolVar(&cliSha1, "sha1", false, "use sh1")
+	flag.BoolVar(&cliSha1, "sha1", false, "use sh1 (default)")
 	flag.BoolVar(&cliSha256, "sha256", false, "use sh256")
+	flag.BoolVar(&cliTest, "t", false, "performance testing")
 	flag.BoolVar(&cliHelp, "h", false, "show help")
 	flag.BoolVar(&cliVersion, "v", false, "show version")
 	flag.Parse()
@@ -67,12 +69,17 @@ Example:
 	} else if cliSha256 {
 		cliMode = "sha256"
 	} else {
-		cliMode = "md5"
+		cliMode = "sha1"
+	}
+
+	// 性能测试
+	if cliTest {
+
 	}
 
 	// 打印版本信息
 	if cliVersion {
-		fmt.Println(`v1.00`)
+		fmt.Println(`v1.02`)
 		os.Exit(0)
 	}
 
@@ -88,7 +95,9 @@ func showChangelog() {
   1.00:
     - First release
   1.01:
-    - Add wildcard(*,?) support in file name`
+    - Add wildcard(*,?) support in file name
+  1.02:
+    - Change default from md5 to sha1(faster and safer)`
 
 	fmt.Println(versionInfo)
 }
