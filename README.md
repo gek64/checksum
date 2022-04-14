@@ -3,25 +3,24 @@
 
 ## Usage
 ```
-Usage:
-  checksum {Mode} [Command] files...
-
-Mode:
-  -md5              : use md5 (default)
-  -crc32            : use crc32
-  -sha1             : use sha1
-  -sha256           : use sha256
-
-Command:
-  -h                : show help
-  -v                : show version
-
-Example:
-  1) checksum /root/books/*.txt
-  2) checksum t1.txt t2.txt
-  3) checksum -md5 t1.txt t2.txt
+Usage:                                  
+  checksum {Mode} [Command] files...    
+                                        
+Mode:                                   
+  -md5              : use md5           
+  -crc32            : use crc32         
+  -sha1             : use sha1 (default)
+  -sha256           : use sha256        
+                                        
+Command:                                
+  -h                : show help         
+  -v                : show version      
+                                        
+Example:                                
+  1) checksum /root/*.txt               
+  2) checksum t1.txt t2.txt             
+  3) checksum -sha1 *                   
   4) checksum -sha1 t1.txt t2.txt
-  5) checksum -sha256 t1.txt t2.txt
 ```
 
 ## Build
