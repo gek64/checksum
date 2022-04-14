@@ -53,6 +53,6 @@ A: I don’t want the project to depend on a certain cloud service provider, and
 
 ## License
 
-**GNU Lesser General Public License v2.1**
+**GPL-3.0 License**
 
 See `LICENSE` for details
