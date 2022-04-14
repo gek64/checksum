@@ -3,9 +3,6 @@
 
 ## Usage
 ```
-Version:
-  1.00
-
 Usage:
   checksum {Mode} [Command] files...
 
@@ -20,13 +17,11 @@ Command:
   -v                : show version
 
 Example:
-  1) checksum text.txt photo.jpg
-  1) checksum -md5 text.txt photo.jpg
-  1) checksum -crc32 text.txt photo.jpg
-  2) checksum -sha1 text.txt photo.jpg
-  3) checksum -sha256 text.txt photo.jpg
-  2) checksum -h
-  3) checksum -v
+  1) checksum /root/books/*.txt
+  2) checksum t1.txt t2.txt
+  3) checksum -md5 t1.txt t2.txt
+  4) checksum -sha1 t1.txt t2.txt
+  5) checksum -sha256 t1.txt t2.txt
 ```
 
 ## Build
