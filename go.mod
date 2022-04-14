@@ -1,7 +1,5 @@
 module checksum
 
-go 1.17
-
 require (
 	gek_checksum v0.0.0
 	gek_path v0.0.0

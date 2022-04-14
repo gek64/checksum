@@ -19,7 +19,6 @@ var (
 	cliCrc32   bool
 	cliSha1    bool
 	cliSha256  bool
-	cliTest    bool
 )
 
 func init() {
@@ -27,23 +26,19 @@ func init() {
 	flag.BoolVar(&cliCrc32, "crc32", false, "use crc32")
 	flag.BoolVar(&cliSha1, "sha1", false, "use sh1 (default)")
 	flag.BoolVar(&cliSha256, "sha256", false, "use sh256")
-	flag.BoolVar(&cliTest, "t", false, "performance testing")
 	flag.BoolVar(&cliHelp, "h", false, "show help")
 	flag.BoolVar(&cliVersion, "v", false, "show version")
 	flag.Parse()
 
 	// 重写显示用法函数
 	flag.Usage = func() {
-		var helpInfo = `Version:
-  1.00
-
-Usage:
+		var helpInfo = `Usage:
   checksum {Mode} [Command] files...
 
 Mode:
-  -md5              : use md5 (default)
+  -md5              : use md5
   -crc32            : use crc32
-  -sha1             : use sha1
+  -sha1             : use sha1 (default)
   -sha256           : use sha256
 
 Command:
@@ -51,15 +46,14 @@ Command:
   -v                : show version
 
 Example:
-  1) checksum /root/books/*.txt
+  1) checksum /root/*.txt
   2) checksum t1.txt t2.txt
-  3) checksum -md5 t1.txt t2.txt
-  4) checksum -sha1 t1.txt t2.txt
-  5) checksum -sha256 t1.txt t2.txt`
+  3) checksum -sha1 *
+  4) checksum -sha1 t1.txt t2.txt`
 		fmt.Println(helpInfo)
 	}
 
-	// 哈希函数模式(默认md5)
+	// 哈希函数模式(默认sha1)
 	if cliCrc32 {
 		cliMode = "crc32"
 	} else if cliMd5 {
@@ -72,14 +66,9 @@ Example:
 		cliMode = "sha1"
 	}
 
-	// 性能测试
-	if cliTest {
-
-	}
-
 	// 打印版本信息
 	if cliVersion {
-		fmt.Println(`v1.02`)
+		fmt.Println(`v1.03`)
 		os.Exit(0)
 	}
 
@@ -97,16 +86,16 @@ func showChangelog() {
   1.01:
     - Add wildcard(*,?) support in file name
   1.02:
-    - Change default from md5 to sha1(faster and safer)`
-
+    - Change default from md5 to sha1(faster and safer)
+  1.03:
+    - Clean code`
 	fmt.Println(versionInfo)
 }
 
 func main() {
-
 	files, err := WildcardMatchFile(flag.Args())
 	if err != nil {
-		log.Fatal(err)
+		log.Panicln(err)
 	}
 
 	for _, file := range files {
@@ -148,7 +137,7 @@ func WildcardMatchFile(pathList []string) (matchList []string, err error) {
 				}
 			}
 		} else {
-			// 一般的无通配符路径则获取绝对路径存储到匹配列表中
+			// 一般无通配符路径则获取绝对路径存储到匹配列表中
 			fullPath, err := filepath.Abs(filePath)
 			if err != nil {
 				return nil, err
